@@ -8,33 +8,55 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card: 240 10% 3.9%;
+    --card-foreground: 0 0% 98%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover: 240 5% 6%;
+    --popover-foreground: 0 0% 98%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 217 91% 60%;
+    --primary-foreground: 240 10% 3.9%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 240 4% 16%;
+    --secondary-foreground: 0 0% 98%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 240 5% 6%;
+    --muted-foreground: 240 5% 64.9%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 186 100% 94%;
+    --accent-foreground: 240 10% 3.9%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 98%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --border: 240 6% 10%;
+    --input: 240 6% 10%;
+    --ring: 217 91% 60%;
+
+    /* Electric theme colors */
+    --electric-blue: 217 91% 60%;
+    --electric-cyan: 186 100% 47%;
+    --electric-green: 120 100% 40%;
+    --electric-amber: 43 96% 56%;
+    --voltage-glow: 217 91% 60%;
+    --current-glow: 186 100% 47%;
+    --power-glow: 120 100% 40%;
+    --cost-glow: 43 96% 56%;
+
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(var(--electric-blue)), hsl(var(--electric-cyan)));
+    --gradient-voltage: linear-gradient(135deg, hsl(var(--electric-blue) / 0.2), hsl(var(--electric-blue) / 0.05));
+    --gradient-current: linear-gradient(135deg, hsl(var(--electric-cyan) / 0.2), hsl(var(--electric-cyan) / 0.05));
+    --gradient-power: linear-gradient(135deg, hsl(var(--electric-green) / 0.2), hsl(var(--electric-green) / 0.05));
+    --gradient-cost: linear-gradient(135deg, hsl(var(--electric-amber) / 0.2), hsl(var(--electric-amber) / 0.05));
+
+    /* Shadows and effects */
+    --shadow-electric: 0 0 20px hsl(var(--electric-blue) / 0.3);
+    --shadow-glow: 0 4px 20px -2px hsl(var(--electric-blue) / 0.25);
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
     --radius: 0.5rem;
 
