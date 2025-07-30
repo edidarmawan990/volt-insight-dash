@@ -1,10 +1,13 @@
 import { useState, useEffect } from 'react';
+import { firebaseService, FirebaseConfig } from '@/services/firebaseService';
 
 export interface MetricData {
   voltage: number;
   current: number;
   power: number;
   cost: number;
+  energy?: number;
+  status?: string;
 }
 
 export interface SocketData {
@@ -37,6 +40,20 @@ export function useDashboardData() {
 
   const [chartData, setChartData] = useState<ChartDataPoint[]>([]);
   const [lastUpdate, setLastUpdate] = useState(new Date());
+  const [isUsingFirebase, setIsUsingFirebase] = useState(false);
+  const [firebaseError, setFirebaseError] = useState<string | null>(null);
+
+  // Check if Firebase is configured on mount
+  useEffect(() => {
+    setIsUsingFirebase(firebaseService.isConfigured());
+  }, []);
+
+  // Function to handle Firebase configuration updates
+  const handleFirebaseConfig = (config: FirebaseConfig) => {
+    firebaseService.setConfig(config);
+    setIsUsingFirebase(true);
+    setFirebaseError(null);
+  };
 
   // Generate initial chart data
   useEffect(() => {
@@ -64,40 +81,73 @@ export function useDashboardData() {
     generateInitialData();
   }, []);
 
-  // Simulate real-time data updates
+  // Fetch real Firebase data or simulate data
   useEffect(() => {
-    const interval = setInterval(() => {
-      // Update metrics
-      setMetrics(prev => ({
-        voltage: 220 + Math.random() * 10 - 5,
-        current: 2 + Math.random() * 2 - 1,
-        power: prev.voltage * prev.current,
-        cost: prev.cost + (prev.power / 1000) * 0.001 // Simple cost calculation
-      }));
-
-      // Update chart data
-      setChartData(prev => {
-        const newPoint = {
-          time: new Date().toLocaleTimeString('en-US', { 
-            hour12: false, 
-            hour: '2-digit', 
-            minute: '2-digit' 
-          }),
+    const updateData = async () => {
+      if (isUsingFirebase) {
+        try {
+          const firebaseData = await firebaseService.fetchSensorData();
+          if (firebaseData) {
+            const mappedMetrics = firebaseService.mapFirebaseToMetrics(firebaseData);
+            setMetrics(mappedMetrics);
+            
+            // Update chart with real data
+            setChartData(prev => {
+              const newPoint = {
+                time: new Date().toLocaleTimeString('en-US', { 
+                  hour12: false, 
+                  hour: '2-digit', 
+                  minute: '2-digit' 
+                }),
+                voltage: mappedMetrics.voltage,
+                current: mappedMetrics.current,
+                power: mappedMetrics.power
+              };
+              return [...prev.slice(1), newPoint];
+            });
+            
+            setFirebaseError(null);
+          }
+        } catch (error) {
+          console.error('Firebase fetch error:', error);
+          setFirebaseError(error instanceof Error ? error.message : 'Unknown error');
+          // Fall back to mock data if Firebase fails
+          setIsUsingFirebase(false);
+        }
+      } else {
+        // Use mock data
+        setMetrics(prev => ({
           voltage: 220 + Math.random() * 10 - 5,
           current: 2 + Math.random() * 2 - 1,
-          power: 0
-        };
-        newPoint.power = newPoint.voltage * newPoint.current;
+          power: prev.voltage * prev.current,
+          cost: prev.cost + (prev.power / 1000) * 0.001
+        }));
 
-        const updated = [...prev.slice(1), newPoint];
-        return updated;
-      });
+        // Update chart data with mock data
+        setChartData(prev => {
+          const newPoint = {
+            time: new Date().toLocaleTimeString('en-US', { 
+              hour12: false, 
+              hour: '2-digit', 
+              minute: '2-digit' 
+            }),
+            voltage: 220 + Math.random() * 10 - 5,
+            current: 2 + Math.random() * 2 - 1,
+            power: 0
+          };
+          newPoint.power = newPoint.voltage * newPoint.current;
+          return [...prev.slice(1), newPoint];
+        });
+      }
 
       setLastUpdate(new Date());
-    }, 3000); // Update every 3 seconds
+    };
+
+    updateData();
+    const interval = setInterval(updateData, 3000); // Update every 3 seconds
 
     return () => clearInterval(interval);
-  }, []);
+  }, [isUsingFirebase]);
 
   const toggleSocket = (socketId: string, newState: boolean) => {
     setSockets(prev => 
@@ -121,6 +171,10 @@ export function useDashboardData() {
     isSystemOnline,
     activeDevices,
     totalDevices,
-    toggleSocket
+    toggleSocket,
+    isUsingFirebase,
+    firebaseError,
+    handleFirebaseConfig,
+    firebaseConfig: firebaseService.getConfig()
   };
 }

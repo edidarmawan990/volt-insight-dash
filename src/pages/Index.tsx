@@ -1,8 +1,10 @@
-import { Zap, Activity, DollarSign, Power } from "lucide-react";
+import { Zap, Activity, DollarSign, Power, AlertTriangle } from "lucide-react";
 import { StatusHeader } from "@/components/dashboard/StatusHeader";
 import { MetricCard } from "@/components/dashboard/MetricCard";
 import { SocketControl } from "@/components/dashboard/SocketControl";
 import { ChartWidget } from "@/components/dashboard/ChartWidget";
+import { FirebaseConfigPanel } from "@/components/dashboard/FirebaseConfigPanel";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useDashboardData } from "@/hooks/useDashboardData";
 
 const Index = () => {
@@ -14,7 +16,11 @@ const Index = () => {
     isSystemOnline,
     activeDevices,
     totalDevices,
-    toggleSocket
+    toggleSocket,
+    isUsingFirebase,
+    firebaseError,
+    handleFirebaseConfig,
+    firebaseConfig
   } = useDashboardData();
 
   return (
@@ -26,6 +32,37 @@ const Index = () => {
           activeDevices={activeDevices}
           lastUpdate={lastUpdate}
         />
+        
+        {/* Firebase Configuration Panel */}
+        {(!isUsingFirebase || firebaseError) && (
+          <div className="mb-8">
+            <FirebaseConfigPanel 
+              onConfigSave={handleFirebaseConfig}
+              currentConfig={firebaseConfig || undefined}
+            />
+          </div>
+        )}
+        
+        {/* Firebase Error Alert */}
+        {firebaseError && (
+          <Alert className="mb-6 border-destructive/50 bg-destructive/10">
+            <AlertTriangle className="h-4 w-4" />
+            <AlertDescription>
+              Firebase Error: {firebaseError}. Falling back to mock data.
+            </AlertDescription>
+          </Alert>
+        )}
+        
+        {/* Data Source Indicator */}
+        <div className="mb-6 flex justify-center">
+          <div className={`text-sm px-3 py-1 rounded-full ${
+            isUsingFirebase 
+              ? "bg-electric-green/20 text-electric-green" 
+              : "bg-electric-amber/20 text-electric-amber"
+          }`}>
+            {isUsingFirebase ? "🔥 Live Firebase Data" : "📊 Mock Data"}
+          </div>
+        </div>
         
         {/* Metrics Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
