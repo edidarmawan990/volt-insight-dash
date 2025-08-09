@@ -29,6 +29,13 @@ class FirebaseService {
       } catch (error) {
         console.error('Failed to parse Firebase config:', error);
       }
+    } else {
+      // Auto-configure with the provided Firebase settings
+      this.config = {
+        url: 'https://smart-socket-ebb04-default-rtdb.asia-southeast1.firebasedatabase.app/dataMonitoring.json',
+        authKey: 'AIzaSyBK-UIyz6Og-FOQ-J6R3FWl059_KpHHoGU'
+      };
+      localStorage.setItem('firebase-config', JSON.stringify(this.config));
     }
   }
 
