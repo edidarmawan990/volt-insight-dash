@@ -6,6 +6,7 @@ export interface MetricData {
   current: number;
   power: number;
   cost: number;
+  costToday?: number;
   energy?: number;
   status?: string;
 }

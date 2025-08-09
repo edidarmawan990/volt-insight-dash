@@ -1,12 +1,10 @@
 export interface FirebaseSensorData {
-  sensor: {
-    arus: number;    // Current (A)
-    biaya: number;   // Cost
-    daya: number;    // Power (W) 
-    energi: number;  // Energy
-    tegangan: number; // Voltage (V)
-  };
-  status: string;
+  arus: number;      // Current (A)
+  biaya: number;     // Cost
+  daya: number;      // Power (W) 
+  energi: number;    // Energy
+  tegangan: number;  // Voltage (V)
+  status: string;    // Status
 }
 
 export interface FirebaseConfig {
@@ -68,7 +66,7 @@ class FirebaseService {
       const data = await response.json();
       
       // Validate the data structure matches expected format
-      if (data && data.sensor && typeof data.status === 'string') {
+      if (data && typeof data.arus === 'number' && typeof data.status === 'string') {
         return data as FirebaseSensorData;
       } else {
         throw new Error('Invalid data format received from Firebase');
@@ -82,12 +80,12 @@ class FirebaseService {
   // Convert Firebase data to dashboard format
   mapFirebaseToMetrics(firebaseData: FirebaseSensorData) {
     return {
-      voltage: firebaseData.sensor.tegangan,
-      current: firebaseData.sensor.arus,
-      power: firebaseData.sensor.daya,
-      cost: firebaseData.sensor.biaya,
-      energy: firebaseData.sensor.energi,
-      status: firebaseData.status
+      voltage: firebaseData.tegangan || 0,
+      current: firebaseData.arus || 0,
+      power: firebaseData.daya || 0,
+      cost: firebaseData.biaya || 0,
+      energy: firebaseData.energi || 0,
+      status: firebaseData.status || 'UNKNOWN'
     };
   }
 }
