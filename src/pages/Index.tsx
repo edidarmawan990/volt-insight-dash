@@ -136,17 +136,19 @@ const Index = () => {
         </div>
 
         {/* Socket Controls */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {sockets.map(socket => (
-            <SocketControl
-              key={socket.id}
-              socketId={socket.id}
-              name={socket.name}
-              isOnline={socket.isOnline}
-              isOn={socket.isOn}
-              onToggle={toggleSocket}
-            />
-          ))}
+        <div className="flex justify-center">
+          <div className="w-full max-w-md">
+            {sockets.map(socket => (
+              <SocketControl
+                key={socket.id}
+                socketId={socket.id}
+                name={socket.name}
+                isOnline={socket.isOnline}
+                isOn={socket.isOn}
+                onToggle={toggleSocket}
+              />
+            ))}
+          </div>
         </div>
       </div>
     </div>

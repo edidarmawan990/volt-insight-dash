@@ -34,9 +34,7 @@ export function useDashboardData() {
   });
 
   const [sockets, setSockets] = useState<SocketData[]>([
-    { id: '1', name: 'Main Socket', isOnline: true, isOn: true },
-    { id: '2', name: 'Backup Socket', isOnline: true, isOn: false },
-    { id: '3', name: 'Emergency Socket', isOnline: false, isOn: false }
+    { id: '1', name: 'Main Socket', isOnline: true, isOn: true }
   ]);
 
   const [chartData, setChartData] = useState<ChartDataPoint[]>([]);
