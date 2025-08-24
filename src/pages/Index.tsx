@@ -1,11 +1,13 @@
-import { Zap, Activity, DollarSign, Power, AlertTriangle } from "lucide-react";
+import { Zap, Activity, DollarSign, Power, AlertTriangle, LogOut } from "lucide-react";
 import { StatusHeader } from "@/components/dashboard/StatusHeader";
 import { MetricCard } from "@/components/dashboard/MetricCard";
 import { SocketControl } from "@/components/dashboard/SocketControl";
 import { ChartWidget } from "@/components/dashboard/ChartWidget";
 import { FirebaseConfigPanel } from "@/components/dashboard/FirebaseConfigPanel";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
 import { useDashboardData } from "@/hooks/useDashboardData";
+import { useAuth } from "@/hooks/useAuth";
 
 const Index = () => {
   const {
@@ -23,15 +25,28 @@ const Index = () => {
     firebaseConfig
   } = useDashboardData();
 
+  const { logout } = useAuth();
+
   return (
     <div className="min-h-screen bg-background p-6">
       <div className="max-w-7xl mx-auto">
-        <StatusHeader 
-          isSystemOnline={isSystemOnline}
-          totalDevices={totalDevices}
-          activeDevices={activeDevices}
-          lastUpdate={lastUpdate}
-        />
+        <div className="flex justify-between items-center mb-8">
+          <StatusHeader 
+            isSystemOnline={isSystemOnline}
+            totalDevices={totalDevices}
+            activeDevices={activeDevices}
+            lastUpdate={lastUpdate}
+          />
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={logout}
+            className="flex items-center gap-2"
+          >
+            <LogOut className="h-4 w-4" />
+            Logout
+          </Button>
+        </div>
         
         {/* Firebase Configuration Panel */}
         {(!isUsingFirebase || firebaseError) && (
